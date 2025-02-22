@@ -1,33 +1,8 @@
 const express = require('express');
-const multer = require('multer');
+const upload = require('../middleware/upload'); // Import the upload middleware
 const File = require('../models/File'); // Your file metadata model
-const path = require('path');
 
 const router = express.Router();
-
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../uploads')); // Your upload directory
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`; // Generating a unique name
-    cb(null, uniqueName); // Saving the unique name
-  },
-});
-
-// Multer setup
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file limit
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-    if (!allowedTypes.includes(file.mimetype)) {
-      return cb(new Error('Invalid file type. Only JPEG, PNG, and PDFs are allowed.'));
-    }
-    cb(null, true);
-  },
-});
 
 // Upload route
 router.post('/', upload.single('file'), async (req, res) => {

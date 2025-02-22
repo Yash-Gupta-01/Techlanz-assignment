@@ -26,10 +26,13 @@ app.get('/', (req, res) => {
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB Connected'))
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+    console.log('MongoDB Connected');
+  })
   .catch((err) => console.error('MongoDB Connection Error:', err));
 
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+
